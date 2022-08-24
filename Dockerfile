@@ -1,9 +1,7 @@
-FROM golang:alpine
+FROM alpine
 
 WORKDIR /build
 
-COPY ./ .
+COPY ./build/go-monitoring .
 
-RUN go build -o ./build
-
-CMD ["./build/go-monitoring"]
+CMD ["./go-monitoring"]
