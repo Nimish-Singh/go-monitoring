@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY ./ .
 
-RUN go build -o ./build
+RUN cd ./src && go build -o ./../build
 
 FROM alpine
 
