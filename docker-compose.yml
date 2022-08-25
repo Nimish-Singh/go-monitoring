@@ -12,10 +12,14 @@ services:
     configs:
     - source: telegraf-conf
       target: /etc/telegraf/telegraf.conf
+    environment:
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
     ports:
     - 8186:8186
   influxdb:
     image: influxdb
+    ports:
+    - 8086:8086
   chronograf:
     image: chronograf
     ports:
