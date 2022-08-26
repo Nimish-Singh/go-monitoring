@@ -7,6 +7,7 @@ import (
 
   "github.com/prometheus/client_golang/prometheus/promhttp"
 
+  "go-monitoring/metrics"
   "go-monitoring/service"
 )
 
@@ -29,6 +30,7 @@ func randomResponseGenerator (w http.ResponseWriter, req *http.Request) {
     log.Printf("Returning status code- %d", responseCode)
     w.WriteHeader(responseCode)
     w.Write([]byte("Returned status code:"  + strconv.Itoa(responseCode)))
+    metrics.Http_response.WithLabelValues(strconv.Itoa(responseCode), "/randomiser").Inc()
 }
 
 
