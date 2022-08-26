@@ -5,6 +5,8 @@ import (
   "net/http"
   "strconv"
 
+  "github.com/prometheus/client_golang/prometheus/promhttp"
+
   "go-monitoring/service"
 )
 
@@ -31,6 +33,7 @@ func randomResponseGenerator (w http.ResponseWriter, req *http.Request) {
 
 
 func main() {
+    http.Handle("/metrics", promhttp.Handler())
     http.HandleFunc("/randomiser", randomResponseGenerator)
     log.Println("Listening for requests at http://localhost:8000/randomiser")
     log.Fatal(http.ListenAndServe(":8000", nil))
