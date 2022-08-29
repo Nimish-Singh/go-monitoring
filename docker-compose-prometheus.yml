@@ -5,15 +5,27 @@ services:
       context: .
       dockerfile: Dockerfile
     image: go-monitoring/latest
+    container_name: mygoservice
     ports:
     - 8000:8000
   prometheus:
     image: prom/prometheus
+    container_name: prometheus
     configs:
     - source: prometheus-conf
       target: /etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    configs:
+    - source: grafana-conf
+      target: /etc/grafana/provisioning/datasources/datasource.yml
+    ports:
+      - 3000:3000
 configs:
   prometheus-conf:
     file: ./prometheus/prometheus.yml
+  grafana-conf:
+    file: ./grafana/datasource.yml
