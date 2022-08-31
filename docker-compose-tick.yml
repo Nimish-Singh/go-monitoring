@@ -35,8 +35,15 @@ services:
   kapacitor:
     image: kapacitor
     container_name: kapacitor
+    configs:
+    - source: kapacitor-conf
+      target: /etc/kapacitor/kapacitor.conf
     environment:
-    - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+      PASSWORD: ${INFLUX_TOKEN}
+    ports:
+    - 9092:9092
 configs:
   telegraf-conf:
     file: ./telegraf/telegraf.conf
+  kapacitor-conf:
+    file: ./kapacitor/kapacitor.conf
