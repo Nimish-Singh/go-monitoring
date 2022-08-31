@@ -38,7 +38,7 @@ services:
     container_name: chronograf
     ports:
     - 8888:8888
-    command: ["chronograf", "--influxdb-url=http://influxdb:8086", "--kapacitor-url=http://kapacitor:9092"]
+    command: ["chronograf", "--influxdb-url=http://influxdb:8086", "--influxdb-username=admin", "--influxdb-org=go-monitoring", "--influxdb-token=${INFLUX_TOKEN}", "--kapacitor-url=http://kapacitor:9092"]
   kapacitor:
     image: kapacitor
     container_name: kapacitor
