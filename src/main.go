@@ -3,13 +3,38 @@ package main
 import (
   "log"
   "net/http"
+  "os"
   "strconv"
+  "strings"
 
+  "github.com/cactus/go-statsd-client/v5/statsd"
   "github.com/prometheus/client_golang/prometheus/promhttp"
 
-  "go-monitoring/metrics"
+  "go-monitoring/metrics/prometheusclient"
+  "go-monitoring/metrics/statsdclient"
   "go-monitoring/service"
 )
+
+const (
+  prometheus = "prometheus"
+  tick = "tick"
+)
+
+func collectMetric(responseCode string, url string) {
+  var observabilityStack = strings.ToLower(os.Getenv("OBSERVABILITY_STACK"))
+  if observabilityStack == tick {
+    log.Print("tick stack")
+    err := statsdclient.Client.Inc("http_response_value", 1, 1.0, statsd.Tag{"code", responseCode}, statsd.Tag{"url", url})
+    if err != nil {
+      log.Printf("Could not send metrics. Error: %v", err)
+    }
+    return
+  }
+  if observabilityStack == prometheus {
+    log.Print("prom stack")
+    prometheusclient.Http_response.WithLabelValues(responseCode, url).Inc()
+  }
+}
 
 func getResponseCode() int {
   randomNumber := service.Generate()
@@ -30,7 +55,7 @@ func randomResponseGenerator (w http.ResponseWriter, req *http.Request) {
     log.Printf("Returning status code- %d", responseCode)
     w.WriteHeader(responseCode)
     w.Write([]byte("Returned status code:"  + strconv.Itoa(responseCode)))
-    metrics.Http_response.WithLabelValues(strconv.Itoa(responseCode), "/randomiser").Inc()
+    collectMetric(strconv.Itoa(responseCode), "/randomiser")
 }
 
 

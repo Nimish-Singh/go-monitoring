@@ -4,11 +4,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: go-monitoring/latest
+    image: go-monitoring:latest
+    container_name: mygoservice
+    environment:
+      OBSERVABILITY_STACK: "tick"
     ports:
     - 8000:8000
   telegraf:
     image: telegraf
+    container_name: telegraf
     configs:
     - source: telegraf-conf
       target: /etc/telegraf/telegraf.conf
@@ -16,17 +20,21 @@ services:
       INFLUX_TOKEN: ${INFLUX_TOKEN}
     ports:
     - 8186:8186
+    - 8125:8125/udp
   influxdb:
     image: influxdb
+    container_name: influxdb
     ports:
     - 8086:8086
   chronograf:
     image: chronograf
+    container_name: chronograf
     ports:
     - 8888:8888
     command: ["chronograf", "--influxdb-url=http://influxdb:8086"]
   kapacitor:
     image: kapacitor
+    container_name: kapacitor
     environment:
     - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
 configs:

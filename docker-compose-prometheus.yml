@@ -4,8 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: go-monitoring/latest
+    image: go-monitoring:latest
     container_name: mygoservice
+    environment:
+      OBSERVABILITY_STACK: "prometheus"
     ports:
     - 8000:8000
   prometheus:
