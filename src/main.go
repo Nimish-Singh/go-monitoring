@@ -24,7 +24,7 @@ func collectMetric(responseCode string, url string) {
   var observabilityStack = strings.ToLower(os.Getenv("OBSERVABILITY_STACK"))
   if observabilityStack == tick {
     log.Print("tick stack")
-    err := statsdclient.Client.Inc("http_response_value", 1, 1.0, statsd.Tag{"code", responseCode}, statsd.Tag{"url", url})
+    err := statsdclient.Client.Inc(fmt.Sprintf("http_response_value_code_%s", responseCode), 1, 1.0, statsd.Tag{"url", url})
     if err != nil {
       log.Printf("Could not send metrics. Error: %v", err)
     }
